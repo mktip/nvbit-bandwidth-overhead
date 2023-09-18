@@ -11,7 +11,7 @@ bandwidth_manual_instrmnt: bandwidth.cu Makefile
 run: bandwidth
 	CUDA_FORCE_PTX_JIT=1 ./bandwidth -n $(SIZE)
 
-profile: bandwidth
+profile_nvbit_instrmnt: bandwidth
 	CUDA_FORCE_PTX_JIT=1 LD_PRELOAD=./nvbit/tools/overhead_test/overhead_test.so ./bandwidth -n $(SIZE)
 
 profile_manual_instrmnt: bandwidth_manual_instrmnt

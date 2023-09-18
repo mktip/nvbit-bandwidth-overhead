@@ -65,7 +65,6 @@ __global__ void dmacpy(int *src, int *dst) {
 
 struct diim_args {
   long long int size = 32;
-  int verbose = 0;
   int check = 0;
 };
 
@@ -75,16 +74,13 @@ typedef struct diim_args diim_args;
 void getargs(diim_args *args, int argc, char* argv[]) {
   int c;
 
-  while ((c = getopt(argc, argv, "n:v:c")) != -1) {
+  while ((c = getopt(argc, argv, "n:c")) != -1) {
     switch (c) {
       case 'n':
         args->size = stoll(optarg);
         if (args->size <= 0) {
           fprintf(stderr, "Error: argument for -n cannot be 0 or less\n");
         }
-        break;
-      case 'v':
-        args->verbose = 1;
         break;
       case 'c':
         args->check = 1;
@@ -106,7 +102,6 @@ diim_args *default_args() {
   diim_args *args = (diim_args*) malloc(sizeof(diim_args));
 
   args->size = 32;
-  args->verbose = 0;
   args->check = 0;
 
   return args;
@@ -152,8 +147,7 @@ int main(int argc, char* argv[]) {
     initialize_array<<<std::ceil(args->size / 1024.0), max(args->size > 1024 ? 1024 : args->size % 1025, (long long)1)>>>(g0, 0);
     gpuErrchk(cudaDeviceSynchronize());
 
-    // P2P dma-copy() benchmark
-
+    // P2P ping pong dma copy benchmark
     auto start = chrono::high_resolution_clock::now();
     dmacpy_pingpong<<<std::ceil(args->size / 1024.0), max(args->size > 1024 ? 1024 : args->size % 1025, (long long)1)>>>(g0, g1);
     gpuErrchk(cudaDeviceSynchronize());
@@ -171,12 +165,10 @@ int main(int argc, char* argv[]) {
     gpuErrchk(cudaMemcpy(h0, g0, buf_size, cudaMemcpyDeviceToHost));
     gpuErrchk(cudaMemcpy(h1, g1, buf_size, cudaMemcpyDeviceToHost));
     for (int i = 0; i < args->size; i++) {
-      if (args->verbose) {
-        printf("\rchecking correctness against CPU: %.2f", ((float) (i + 1) / (float) args->size) * 100);
+      printf("\rchecking correctness against CPU: %.2f", ((float) (i + 1) / (float) args->size) * 100);
 
-        if (i == args->size - 1) {
-          printf("\n");
-        }
+      if (i == args->size - 1) {
+        printf("\n");
       }
 
       if (h1[i] + 2 == h0[i] && h0[i] == 2 * ITERS && h1[i] == 2 * (ITERS - 1)) {
