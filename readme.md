@@ -64,7 +64,7 @@ __global__ void dmacpy_pingpong(int volatile *src, int volatile *dst) {
 Here are the results (using 2 A-100 GPUs with NVLink on Karolina):
 
 | Run                         | Time (s) | Bandwidth (GB/s) |
-|-----------------------------+----------+------------------|
+|-----------------------------|----------|------------------|
 | Baseline                    | 1.99599  | 313.128          |
 | Manual Instrumented Version | 2.39037  | 261.466          |
 | NVBit Instrumented Version  | 22.9334  | 27.2528          |
