@@ -64,7 +64,7 @@ __global__ void dmacpy(int *src, int *dst) {
 }
 
 struct diim_args {
-  long long int size = 32;
+  long long int size = 1024 * 1024 * 16;
   int check = 0;
 };
 
