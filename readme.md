@@ -70,10 +70,11 @@ Here are the results (using 2 A-100 GPUs with NVLink on Karolina):
 | NVBit Instrumented Version  | 22.9334  | 27.2528          |
 
 
-The bandwidth test can be compiled with Make:
+The bandwidth test and the NVBit overhead test can be compiled with Make:
 
 ```shell
 $ make
+$ (cd tools/overhead_test/ && make ARCH=80)
 ```
 
 The results can be replicated as follows:
