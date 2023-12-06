@@ -74,7 +74,7 @@ The bandwidth test and the NVBit overhead test can be compiled with Make:
 
 ```shell
 $ make
-$ (cd tools/overhead_test/ && make ARCH=80)
+$ make -C nvbit/tools/overhead_test/ ARCH=80
 ```
 
 The results can be replicated as follows:
